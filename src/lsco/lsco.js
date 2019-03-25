@@ -3,7 +3,6 @@ import { objectToUrl } from '~/utils/helper/url'
 // Axios 的默认配置信息
 const Axios = (requestConfig, renew) => {
   if (!renew && this._Axios) return this._Axios
-  console.log('Axios')
   const _Axios = axios.create({
     baseURL: requestConfig.host,
     timeout: requestConfig.requestTimeout,

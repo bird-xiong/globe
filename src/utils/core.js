@@ -2,6 +2,8 @@ import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator, 
 import { NAVIGATOR_STACK, NAVIGATOR_TABS } from '~/utils/'
 import toObj from './helper/arraytoobj'
 import dynamic from 'dva/dynamic'
+import { Image } from 'react-native'
+import React from 'react'
 
 const createSwitchRoutes = config => {
   const routeConfigs = {}
@@ -29,7 +31,13 @@ const createStackRoutes = config => wrapper => {
 const createTabRoutes = config => {
   const routes = toObj(config.childRoutes)
   const TabNavigator = createBottomTabNavigator(routes, {
-    initialRouteName: config.indexRoute
+    initialRouteName: config.indexRoute,
+    tabBarOptions: {
+      activeTintColor: '#89b178',
+      style: {
+        backgroundColor: '#1a1a1a'
+      }
+    }
   })
   return routeWrapper(config, TabNavigator)
 }
@@ -40,9 +48,23 @@ const createRoute = config => {
 
 const routeWrapper = (config, component, wrapper) => {
   if (!wrapper) return component
+  const getTabBarConfig = config => {
+    const tabBarConfig = {}
+    const _tabBarConfig = config.tabBarConfig
+    if (_tabBarConfig) {
+      if (_tabBarConfig.activeIcon || _tabBarConfig.inactiveIcon) { tabBarConfig.tabBarIcon = ({ focused }) => <Image source={focused ? _tabBarConfig.activeIcon : _tabBarConfig.inactiveIcon} resizeMode="center" /> }
+      if (_tabBarConfig.customItem) { tabBarConfig.tabBarIcon = _tabBarConfig.customItem }
+      if (_tabBarConfig.label) { tabBarConfig.title = _tabBarConfig.label }
+    }
+    return tabBarConfig
+  }
+  const tabBarConfig = getTabBarConfig(config)
   return {
     [config.path]: {
-      screen: component
+      screen: component,
+      navigationOptions: ({ navigation }) => ({
+        ...tabBarConfig
+      })
     }
   }
 }
