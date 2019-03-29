@@ -11,6 +11,10 @@ import dva from '~/utils/dva'
 import appModel from '~/models/app'
 import createRootContainer from '~/pages'
 import createLoading from 'dva-loading'
+import config from './config'
+import request from './lsco/request'
+
+request.config(config.request)
 
 const app = dva({
   initialState: {},

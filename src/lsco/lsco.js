@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { objectToUrl } from '~/utils/helper/url'
+import { isFunction } from '~/utils/helper/is'
+
 // Axios 的默认配置信息
 const Axios = (requestConfig, renew) => {
   if (!renew && this._Axios) return this._Axios
@@ -10,6 +12,7 @@ const Axios = (requestConfig, renew) => {
       'Content-Type': 'application/x-www-form-urlencoded'
     })
   })
+  _Axios.requestConfig = requestConfig
   this._Axios = _Axios
   return _Axios
 }
@@ -30,11 +33,22 @@ class Request {
     this.cancelToken = null
   }
   send() {
-    return Axios()(this.domain + this.path + (this.params ? objectToUrl(this.params) : ''), {
-      method: this.method,
-      headers: this.headers,
-      data: this.body,
-      cancelToken: new axios.CancelToken(c => (this.cancelToken = c))
+    return new Promise((resolve, reject) => {
+      const fetch = Axios()
+      const requestConfig = fetch.requestConfig
+      return fetch(this.domain + this.path + (this.params ? objectToUrl(this.params) : ''), {
+        method: this.method,
+        headers: this.headers,
+        data: this.body,
+        cancelToken: new axios.CancelToken(c => (this.cancelToken = c))
+      }).then(res => {
+        const data = res && res.data
+        let _data = data
+        if (requestConfig && requestConfig.afterResponse) _data = requestConfig.afterResponse(data)
+        resolve(_data)
+      }).catch(error => {
+        if (!requestConfig || !isFunction(requestConfig.errorHandle) || requestConfig.errorHandle(error) !== false) reject(error)
+      })
     })
   }
   start() {
@@ -42,7 +56,7 @@ class Request {
     requestQueue.push({ [this.tag]: this })
     this.send()
       .then(res => {
-        this._success && this._success(res && res.data)
+        this._success && this._success(res)
       })
       .catch(error => {
         this._error && this._error(error, axios.isCancel(error))

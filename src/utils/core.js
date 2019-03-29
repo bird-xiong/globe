@@ -1,9 +1,10 @@
 import { createStackNavigator, createSwitchNavigator, createBottomTabNavigator, createAppContainer } from 'react-navigation'
 import { NAVIGATOR_STACK, NAVIGATOR_TABS } from '~/utils/'
 import toObj from './helper/arraytoobj'
-import dynamic from 'dva/dynamic'
+import dynamic from './dynamic'
 import { Image } from 'react-native'
 import React from 'react'
+import Standard from './standard'
 
 const createSwitchRoutes = config => {
   const routeConfigs = {}
@@ -23,7 +24,11 @@ const createSwitchRoutes = config => {
 const createStackRoutes = config => wrapper => {
   const routes = toObj(config.childRoutes)
   const StackNavigator = createStackNavigator(routes, {
-    initialRouteName: config.indexRoute
+    initialRouteName: config.indexRoute,
+    defaultNavigationOptions: {
+      headerStyle: { borderBottomWidth: 0 }
+    },
+    cardStyle: { backgroundColor: Standard.color.wgreen_main }
   })
   return routeWrapper(config, StackNavigator, wrapper)
 }
@@ -33,9 +38,10 @@ const createTabRoutes = config => {
   const TabNavigator = createBottomTabNavigator(routes, {
     initialRouteName: config.indexRoute,
     tabBarOptions: {
-      activeTintColor: '#89b178',
+      activeTintColor: Standard.color.wgreen_main,
+      inactiveTintColor: Standard.color.wgray_main,
       style: {
-        backgroundColor: '#1a1a1a'
+        backgroundColor: Standard.color.black_bg
       }
     }
   })
@@ -54,7 +60,7 @@ const routeWrapper = (config, component, wrapper) => {
     if (_tabBarConfig) {
       if (_tabBarConfig.activeIcon || _tabBarConfig.inactiveIcon) { tabBarConfig.tabBarIcon = ({ focused }) => <Image source={focused ? _tabBarConfig.activeIcon : _tabBarConfig.inactiveIcon} resizeMode="center" /> }
       if (_tabBarConfig.customItem) { tabBarConfig.tabBarIcon = _tabBarConfig.customItem }
-      if (_tabBarConfig.label) { tabBarConfig.title = _tabBarConfig.label }
+      if (_tabBarConfig.label) { tabBarConfig.tabBarLabel = _tabBarConfig.label }
     }
     return tabBarConfig
   }
@@ -73,7 +79,8 @@ const dynamicWrapper = (app, models, component) =>
   dynamic({
     app,
     models: () => models,
-    component
+    component,
+    async: ins => ins.props.navigation && ins.props.navigation.setParams({ async: true })
   })
 
 export {

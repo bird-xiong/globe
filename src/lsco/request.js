@@ -16,12 +16,16 @@ const request = {
     requestConfig.withHeaders = config.withHeaders
     requestConfig.afterResponse = config.afterResponse
     requestConfig.isSuccess = config.isSuccess
-    requestConfig.errorHandle = config.requestConfig
+    requestConfig.errorHandle = config.errorHandle
     Axios(requestConfig, true)
   },
   Test: {
     getAppIndexRecommendInfo: (params) => {
       return serializeRequest('yohomars/AppIndexRest/getAppIndexRecommendInfo')
+        .params(params).send()
+    },
+    getCityInfo: (params) => {
+      return serializeRequest('yohomars/AppIndexRest/getCityInfo')
         .params(params).send()
     }
   },
