@@ -4,7 +4,7 @@ import toObj from './helper/arraytoobj'
 import dynamic from './dynamic'
 import { Image } from 'react-native'
 import React from 'react'
-import Standard from './standard'
+import standard from './standard'
 
 const createSwitchRoutes = config => {
   const routeConfigs = {}
@@ -26,9 +26,10 @@ const createStackRoutes = config => wrapper => {
   const StackNavigator = createStackNavigator(routes, {
     initialRouteName: config.indexRoute,
     defaultNavigationOptions: {
-      headerStyle: { borderBottomWidth: 0 }
+      headerStyle: { borderBottomWidth: 0 },
+      headerTitleContainerStyle: { ...standard.layout.rcc }
     },
-    cardStyle: { backgroundColor: Standard.color.wgreen_main }
+    cardStyle: { backgroundColor: standard.color.wgreen_main }
   })
   return routeWrapper(config, StackNavigator, wrapper)
 }
@@ -38,10 +39,10 @@ const createTabRoutes = config => {
   const TabNavigator = createBottomTabNavigator(routes, {
     initialRouteName: config.indexRoute,
     tabBarOptions: {
-      activeTintColor: Standard.color.wgreen_main,
-      inactiveTintColor: Standard.color.wgray_main,
+      activeTintColor: standard.color.wgreen_main,
+      inactiveTintColor: standard.color.wgray_main,
       style: {
-        backgroundColor: Standard.color.black_bg
+        backgroundColor: standard.color.black_bg
       }
     }
   })

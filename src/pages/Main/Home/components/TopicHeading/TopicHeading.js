@@ -26,6 +26,7 @@ export default class TopicHeading extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.left !== this.props.left || nextProps.right !== this.props.right) {
       this._animation && this._animation.stop()
+      this._timer && clearTimeout(this._timer)
       this.animate()
     }
   }
@@ -44,7 +45,7 @@ export default class TopicHeading extends React.Component {
       easing: Easing.in(Easing.ease)
     }).start(({ finished }) => {
       if (finished) {
-        setTimeout(() => {
+        this._timer = setTimeout(() => {
           const { count, progress } = this.state
           progress.setValue(0)
           this.setState({

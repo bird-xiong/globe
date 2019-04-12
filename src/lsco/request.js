@@ -1,33 +1,34 @@
 import { NetInfo } from 'react-native'
 import { serializeRequest, Axios } from './lsco'
-const requestConfig = {
+import objectAssign from 'object-assign'
+
+const DEFAULT_REQUSETCONFIG = {
   host: 'http://www.yohomars.com/',
-  requestTimeOut: 30,
+  requestTimeOut: 3000,
   withHeaders: headers => headers,
   responseInterceptors: response => response,
   requestInterceptors: request => request,
   isSuccess: response => response && response.success,
   errorHandle: error => error
 }
+const requestConfig = {
+  ...DEFAULT_REQUSETCONFIG
+}
 const request = {
   config: config => {
-    requestConfig.host = config.host
-    requestConfig.requestTimeOut = config.requestTimeOut
-    requestConfig.withHeaders = config.withHeaders
-    requestConfig.afterResponse = config.afterResponse
-    requestConfig.isSuccess = config.isSuccess
-    requestConfig.errorHandle = config.errorHandle
+    const _config = objectAssign(requestConfig, config)
+    requestConfig.host = _config.host
+    requestConfig.requestTimeOut = _config.requestTimeOut
+    requestConfig.withHeaders = _config.withHeaders
+    requestConfig.afterResponse = _config.afterResponse
+    requestConfig.isSuccess = _config.isSuccess
+    requestConfig.errorHandle = _config.errorHandle
     Axios(requestConfig, true)
   },
   Test: {
-    getAppIndexRecommendInfo: (params) => {
-      return serializeRequest('yohomars/AppIndexRest/getAppIndexRecommendInfo')
-        .params(params).send()
-    },
-    getCityInfo: (params) => {
-      return serializeRequest('yohomars/AppIndexRest/getCityInfo')
-        .params(params).send()
-    }
+    getAppIndexRecommendInfo: params => serializeRequest('yohomars/AppIndexRest/getAppIndexRecommendInfo').params(params).send(),
+    getCityInfo: params => serializeRequest('yohomars/AppIndexRest/getCityInfo').params(params).send(),
+    getIndexInfo: params => serializeRequest('yohomars/AppIndexRest/getAppIndexDataStream').params(params).send()
   },
   NetInfo: {
     isConnected: {

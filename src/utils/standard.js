@@ -64,7 +64,8 @@ const Style = {
 
     /** app文字色**/
     wwhite: '#ffffff',
-    wgreen_main: '#89b178',
+    wgreen_main: '#638A52',
+    wgreen_sub: '#97BB88',
     wgray_main: '#b8b8b8',
     wgray_sub: '#d9d9d9',
     wgray_bar: '#aaaaaa',

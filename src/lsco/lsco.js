@@ -1,13 +1,12 @@
 import axios from 'axios'
 import { objectToUrl } from '~/utils/helper/url'
 import { isFunction } from '~/utils/helper/is'
-
 // Axios 的默认配置信息
 const Axios = (requestConfig, renew) => {
   if (!renew && this._Axios) return this._Axios
   const _Axios = axios.create({
     baseURL: requestConfig.host,
-    timeout: requestConfig.requestTimeout,
+    timeout: requestConfig.requestTimeOut,
     headers: requestConfig.withHeaders({
       'Content-Type': 'application/x-www-form-urlencoded'
     })
@@ -33,22 +32,23 @@ class Request {
     this.cancelToken = null
   }
   send() {
-    return new Promise((resolve, reject) => {
-      const fetch = Axios()
-      const requestConfig = fetch.requestConfig
-      return fetch(this.domain + this.path + (this.params ? objectToUrl(this.params) : ''), {
-        method: this.method,
-        headers: this.headers,
-        data: this.body,
-        cancelToken: new axios.CancelToken(c => (this.cancelToken = c))
-      }).then(res => {
-        const data = res && res.data
-        let _data = data
-        if (requestConfig && requestConfig.afterResponse) _data = requestConfig.afterResponse(data)
-        resolve(_data)
-      }).catch(error => {
-        if (!requestConfig || !isFunction(requestConfig.errorHandle) || requestConfig.errorHandle(error) !== false) reject(error)
-      })
+    const fetch = Axios()
+    const requestConfig = fetch.requestConfig
+    const url = this.path + (this.params ? objectToUrl(this.params) : '')
+    return fetch.request({
+      url,
+      params: this.params,
+      method: this.method,
+      headers: this.headers,
+      data: this.body,
+      cancelToken: new axios.CancelToken(c => (this.cancelToken = c))
+    }).then(res => {
+      const data = res && res.data
+      let _data = data
+      if (requestConfig && requestConfig.afterResponse) _data = requestConfig.afterResponse(data)
+      return _data
+    }).catch(error => {
+      if (!requestConfig || !isFunction(requestConfig.errorHandle) || requestConfig.errorHandle(error) !== false) { return { error } }
     })
   }
   start() {
