@@ -6,7 +6,7 @@ const DEFAULT_REQUSETCONFIG = {
   host: 'http://www.yohomars.com/',
   requestTimeOut: 3000,
   withHeaders: headers => headers,
-  responseInterceptors: response => response,
+  afterResponse: response => response,
   requestInterceptors: request => request,
   isSuccess: response => response && response.success,
   errorHandle: error => error
