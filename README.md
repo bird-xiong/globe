@@ -1,6 +1,9 @@
 
 ## 声明
 globe 所用的的数据接口`api`和图片资源均通过非正常手段获取，只用于该开源项目的页面的模拟与展示，严禁他人使用于商业用途或不正当谋利。
+
+---
+
 ## 环境
 #### dependencies  
 >react: 16.8.3  
@@ -9,7 +12,8 @@ react-native: 0.59.1
 #### CLI  
 >react-native-cli: 2.0.1  
 yarn: 1.15.2
-
+  
+<br>
 
 ![刷新动效](https://github.com/bird-xiong/globe/blob/master/src/imgs/demo/loading.gif?raw=true)
 ![Home1](https://github.com/bird-xiong/globe/blob/master/src/imgs/demo/home1.png?raw=true)
@@ -144,3 +148,15 @@ const request = {
 <Animatable.Image style={{ position: 'absolute', left: 0, bottom: 10 }} animation={make => make.translateY().toValue(-10).duration(1000).loop()} source={require('~/imgs/ufo.png')} />
 
 ```
+
+## TODO
+- [ ] **页面**
+  - [ ] 其他tab页面
+- [ ] **导航**
+  - [ ] 支持 present 动画
+  - [ ] dispatch 移交 dva 托管 
+- [ ] **组件**
+  - [ ] AnimatedEasy 功能丰富
+- [ ] **工具**
+  - [ ] pageHepler 分页工具，支持请求序列化
+  - [ ] createModel 扩展model
